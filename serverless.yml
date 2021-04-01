@@ -1,0 +1,13 @@
+service: appsync-masterclass-backend
+
+# since we're using ONLY a local dependency of SLS, the frameworkVersion is not necessary.
+#frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+
+#functions:
+#  hello:
+#    handler: handler.hello
