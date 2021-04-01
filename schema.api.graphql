@@ -4,7 +4,29 @@ schema {
 }
 
 type Query {
-#  getMyProfile: Profile!
+  # We return diff Profile-types in order to ONLY return data relative to user
+    # - e.g. The "Follow"/"Following" badge displayed on other's profiles. This info isn't necessary when viewing our own profile.
+  getMyProfile: MyProfile!
+
+  getProfile(screenName: String!): OtherProfile!
 }
 
 type Muatation {}
+
+type MyProfile {
+  id: ID!
+  name: String!
+  screenName: String!
+  imageUrl: AWSURL
+  backgroundImageUrl: AWSURL
+  bio: String
+  location: String
+  website: AWSURL
+  birthdate: AWSDate
+  createdAt: AWSDateTime!
+  tweets: [Tweet!]
+  followersCount: int!
+  followingCount: int!
+  tweetsCount: int!
+  likeCount: int!
+}
