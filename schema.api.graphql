@@ -9,6 +9,8 @@ type Query {
   getMyProfile: MyProfile!
 
   getProfile(screenName: String!): OtherProfile!
+
+  getTweets(userId: ID!, limits: Int!, nextToken: String): TweetsPage!
 }
 
 type Muatation {}
@@ -24,9 +26,37 @@ type MyProfile {
   website: AWSURL
   birthdate: AWSDate
   createdAt: AWSDateTime!
+  tweets: TweetsPage!
+  followersCount: Int!
+  followingCount: Int!
+  tweetsCount: Int!
+  likesCount: Int!
+}
+
+# Profile type to represent users other than yourself (the logged in user)
+type OtherProfile {
+  id: ID!
+  name: String!
+  screenName: String!
+  imageUrl: AWSURL
+  backgroundImageUrl: AWSURL
+  bio: String
+  location: String
+  website: AWSURL
+  birthdate: AWSDate
+  createdAt: AWSDateTime!
+  tweets: TweetsPage!
+  followersCount: Int!
+  followingCount: Int!
+  tweetsCount: Int!
+  likesCount: Int!
+  following: Boolean!
+  followedBy: Boolean!
+}
+
+type TweetsPage {
   tweets: [Tweet!]
-  followersCount: int!
-  followingCount: int!
-  tweetsCount: int!
-  likeCount: int!
+  # nextToken is used for pagination & can be used as an opaque token on the frontend to request the next page of Tweets
+  # fetched with getTweets()
+  nextToken: String
 }
