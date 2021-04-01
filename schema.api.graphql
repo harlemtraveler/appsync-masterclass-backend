@@ -15,7 +15,26 @@ type Query {
 
 type Muatation {}
 
-type MyProfile {
+# We created an "interface", here named Profile, to act as base foundation for all Profile types.
+interface Profile {
+  id: ID!
+  name: String!
+  screenName: String!
+  imageUrl: AWSURL
+  backgroundImageUrl: AWSURL
+  bio: String
+  location: String
+  website: AWSURL
+  birthdate: AWSDate
+  createdAt: AWSDateTime!
+  tweets: TweetsPage!
+  followersCount: Int!
+  followingCount: Int!
+  tweetsCount: Int!
+  likesCount: Int!
+}
+
+type MyProfile implements Profile {
   id: ID!
   name: String!
   screenName: String!
@@ -34,7 +53,7 @@ type MyProfile {
 }
 
 # Profile type to represent users other than yourself (the logged in user)
-type OtherProfile {
+type OtherProfile implements Profile{
   id: ID!
   name: String!
   screenName: String!
