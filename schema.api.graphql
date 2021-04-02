@@ -4,8 +4,6 @@ schema {
 }
 
 type Query {
-  # We return diff Profile-types in order to ONLY return data relative to user
-    # - e.g. The "Follow"/"Following" badge displayed on other's profiles. This info isn't necessary when viewing our own profile.
   getMyProfile: MyProfile!
 
   getProfile(screenName: String!): OtherProfile!
@@ -15,8 +13,9 @@ type Query {
 
 type Muatation {}
 
-# We created an "interface", here named Profile, to act as base foundation for all Profile types.
-interface Profile {
+# we created an "interface", here named Profile, to act as base foundation for all Profile types.
+# to assit with distinction between an "interface" and "type", we'll add an "I" prefix to all interface names (*similar to Java or .NET)
+interface IProfile {
   id: ID!
   name: String!
   screenName: String!
@@ -34,7 +33,7 @@ interface Profile {
   likesCount: Int!
 }
 
-type MyProfile implements Profile {
+type MyProfile implements IProfile {
   id: ID!
   name: String!
   screenName: String!
@@ -52,8 +51,7 @@ type MyProfile implements Profile {
   likesCount: Int!
 }
 
-# Profile type to represent users other than yourself (the logged in user)
-type OtherProfile implements Profile{
+type OtherProfile implements IProfile{
   id: ID!
   name: String!
   screenName: String!
@@ -73,9 +71,19 @@ type OtherProfile implements Profile{
   followedBy: Boolean!
 }
 
+type Tweet {
+  id: ID!
+  profile: IProfile!
+  createdAt: AWSDateTime!
+  text: String!
+  replies: Int!
+  likes: Int!
+  retweets: Int!
+  liked: Boolean!
+  retweeted: Boolean!
+}
+
 type TweetsPage {
   tweets: [Tweet!]
-  # nextToken is used for pagination & can be used as an opaque token on the frontend to request the next page of Tweets
-  # fetched with getTweets()
   nextToken: String
 }
