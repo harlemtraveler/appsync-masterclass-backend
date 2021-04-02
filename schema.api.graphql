@@ -13,8 +13,6 @@ type Query {
 
 type Muatation {}
 
-# we created an "interface", here named Profile, to act as base foundation for all Profile types.
-# to assit with distinction between an "interface" and "type", we'll add an "I" prefix to all interface names (*similar to Java or .NET)
 interface IProfile {
   id: ID!
   name: String!
@@ -71,7 +69,9 @@ type OtherProfile implements IProfile{
   followedBy: Boolean!
 }
 
-type Tweet {
+interface ITweet {}
+
+type Tweet implements ITweet {
   id: ID!
   profile: IProfile!
   createdAt: AWSDateTime!
@@ -83,12 +83,12 @@ type Tweet {
   retweeted: Boolean!
 }
 
-type Reply { # the Reply has the same basic fields as Tweet
+type Reply implements ITweet { # the Reply has the same basic fields as Tweet
   id: ID!
   profile: IProfile!
   createdAt: AWSDateTime!
   # in additional to the common fields with Tweet, we need to know this is in reply to another Tweet & User
-  inReplyToTweet: Tweet! # but what if we reply to a Reply? We cant just leave this return value to simply be a Tweet.
+  inReplyToTweet: ITweet! # but what if we reply to a Reply? We cant just leave this return value to simply be a Tweet.
   inReplyToUser: IProfile!
   text: String!
   replies: Int!
@@ -96,6 +96,15 @@ type Reply { # the Reply has the same basic fields as Tweet
   retweets: Int!
   liked: Boolean!
   retweeted: Boolean!
+}
+
+# we need to be aware that the Retweet can be replied to.
+# the Reply will be delivered to the original Tweet's author, users who've retweeted it as well, and any users tagged.
+type Retweet implements ITweet {
+  id: ID!
+  profile: IProfile!
+  createdAt: AWSDateTime!
+  retweetOf: ITweet!
 }
 
 type TweetsPage {
