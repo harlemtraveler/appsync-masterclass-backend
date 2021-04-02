@@ -83,9 +83,19 @@ type Tweet {
   retweeted: Boolean!
 }
 
-# "replied" is also Tweet, but would require knowledge of Tweet and the Profile we replied to.
-type Reply {
-
+type Reply { # the Reply has the same basic fields as Tweet
+  id: ID!
+  profile: IProfile!
+  createdAt: AWSDateTime!
+  # in additional to the common fields with Tweet, we need to know this is in reply to another Tweet & User
+  inReplyToTweet: Tweet! # but what if we reply to a Reply? We cant just leave this return value to simply be a Tweet.
+  inReplyToUser: IProfile!
+  text: String!
+  replies: Int!
+  likes: Int!
+  retweets: Int!
+  liked: Boolean!
+  retweeted: Boolean!
 }
 
 type TweetsPage {
