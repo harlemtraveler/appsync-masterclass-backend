@@ -4,6 +4,11 @@ schema {
 }
 
 type Query {
+  # To support image uploads (for features such as updating profile pics), we need to handle URLs as a "Type" for graphql
+  getImageUploadUrl(extension: String, contentType: String): AWSURL!
+
+  getMyTimeline(limit: Int!, nextToken: String): TweetsPage!
+
   getMyProfile: MyProfile!
 
   getProfile(screenName: String!): OtherProfile!
