@@ -83,6 +83,11 @@ type Tweet {
   retweeted: Boolean!
 }
 
+# "replied" is also Tweet, but would require knowledge of Tweet and the Profile we replied to.
+type Reply {
+
+}
+
 type TweetsPage {
   tweets: [Tweet!]
   nextToken: String
