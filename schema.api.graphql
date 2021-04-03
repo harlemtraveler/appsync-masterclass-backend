@@ -24,7 +24,23 @@ type Query {
   getFollowing(userId: ID!, limit: Int, nextToken: String): ProfilesPage!
 }
 
-type Muatation {}
+type Muatation {
+  # editMyProfile will be used to edit the Profile type which possess the following fields:
+  # -- name
+  # -- bio
+  # -- location
+  # -- birthdate
+  #
+  #
+  # To update these fields, there are two options. We can either:
+  # -- define all these fields as arguments for this mutation
+  # -- capture these fields as a separate "type" called "input" (the conventional graphql approach)
+
+
+  editMyProfile(name, imageUrl, backgroundImageUrl): MyProfile!
+}
+
+
 
 interface IProfile {
   id: ID!
