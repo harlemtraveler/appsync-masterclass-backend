@@ -25,23 +25,28 @@ type Query {
 }
 
 type Muatation {
-  # editMyProfile will be used to edit the Profile type which possess the following fields:
-  # -- name
-  # -- bio
-  # -- location
-  # -- birthdate
-  #
-  #
-  # To update these fields, there are two options. We can either:
-  # -- define all these fields as arguments for this mutation
-  # -- capture these fields as a separate "type" called "input" (the conventional graphql approach)
-
-
   editMyProfile(newProfile: ProfileInput!): MyProfile!
 
+  # a tweet will be returned
+  tweet(text: String!): Tweet!
+
+  # We don't need to return anything, but GraphQL doesn't allow void types, so the convention is to return a Boolean
+  like(tweetId: ID!): Boolean!
+
+  unlike(tweetId: ID!): Boolean!
+
+  retweet(tweetId: ID!): Boolean!
+
+  unretweet(tweetId: ID!): Boolean!
+
+  reply(tweetId: ID!, text: String!): Reply!
+
+  follow(userId: ID!): Boolean!
+
+  unfollow(userId: ID!): Boolean!
 }
 
-# The "input" type cannot be returned by any Query or Mutation, and can only be used as Arguements.
+
 input ProfileInput {
   name: String!
   imageUrl: AWSURL
