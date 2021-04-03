@@ -37,10 +37,20 @@ type Muatation {
   # -- capture these fields as a separate "type" called "input" (the conventional graphql approach)
 
 
-  editMyProfile(name, imageUrl, backgroundImageUrl): MyProfile!
+  editMyProfile(newProfile: ProfileInput!): MyProfile!
+
 }
 
-
+# The "input" type cannot be returned by any Query or Mutation, and can only be used as Arguements.
+input ProfileInput {
+  name: String!
+  imageUrl: AWSURL
+  backgroundImageUrl: AWSURL
+  bio: String
+  location: String
+  website: AWSURL
+  birthdate: AWSDate
+}
 
 interface IProfile {
   id: ID!
