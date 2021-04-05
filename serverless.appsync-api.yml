@@ -1,2 +1,14 @@
 name: appsyncmasterclass
 schema: schema.api.graphql
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig:
+  awsRegion: us-east-1
+  defaultAction: ALLOW
+  # the "!Ref" label is the CloudFormation Ref-in-transit function see...
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+  #
+  # reference source transcript: "The intrinsic function Ref returns the value of the specified parameter or resource."
+  #
+  #
+  # Below, we reference the CognitoUserPool configuration we've defined in serverless.yml, in the prior step:
+  userPoolId: !Ref CognitoUserPool
