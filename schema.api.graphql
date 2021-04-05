@@ -108,7 +108,11 @@ type OtherProfile implements IProfile{
   followedBy: Boolean!
 }
 
-interface ITweet {}
+interface ITweet {
+  id: ID!
+  profile: IProfile!
+  createdAt: AWSDateTime!
+}
 
 type Tweet implements ITweet {
   id: ID!
