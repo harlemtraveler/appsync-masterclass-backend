@@ -8,6 +8,31 @@ provider:
   runtime: nodejs12.x
 
 
-#functions:
-#  hello:
-#    handler: handler.hello
+resources:
+  Resources:
+    # First, we define a new resource named "CognitoUserPool", which will (as the name implies) hold our newly defined Cognito User Pool info.
+    # we'll define & use the resource named "CognitoUserPool" as the value passed to "CognitoUserPoolId" in the "Outputs" section
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        # auto verifies any email addresses for cognito
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequiredLowerCase: false
+            RequiredNumbers: false
+            RequiredUpperCase: false
+            RequiredSymbols: false
+        UsernameAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            Name: name
+            Required: false
+            Mutable: true
+  Outputs:
+    CognitoUserPoolId:
+      # the value passed below references the "CognitoUserPool" resource defined in the "Resources" section above^^^
+      Value: !Ref CognitoUserPool
