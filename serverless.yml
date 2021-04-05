@@ -16,10 +16,10 @@ resources:
         Policies:
           PasswordPolicy:
             MinimumLength: 8
-            RequiredLowerCase: false
-            RequiredNumbers: false
-            RequiredUpperCase: false
-            RequiredSymbols: false
+            RequireLowerCase: false
+            RequireNumbers: false
+            RequireUpperCase: false
+            RequireSymbols: false
         UsernameAttributes:
           - email
         Schema:
