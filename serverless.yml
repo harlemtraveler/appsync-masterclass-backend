@@ -1,8 +1,5 @@
 service: appsync-masterclass-backend
 
-# since we're using ONLY a local dependency of SLS, the frameworkVersion is not necessary.
-#frameworkVersion: '2'
-
 provider:
   name: aws
   runtime: nodejs12.x
@@ -11,12 +8,9 @@ provider:
 
 resources:
   Resources:
-    # First, we define a new resource named "CognitoUserPool", which will (as the name implies) hold our newly defined Cognito User Pool info.
-    # we'll define & use the resource named "CognitoUserPool" as the value passed to "CognitoUserPoolId" in the "Outputs" section
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
-        # auto verifies any email addresses for cognito
         AutoVerifiedAttributes:
           - email
         Policies:
@@ -35,5 +29,4 @@ resources:
             Mutable: true
   Outputs:
     CognitoUserPoolId:
-      # the value passed below references the "CognitoUserPool" resource defined in the "Resources" section above^^^
       Value: !Ref CognitoUserPool
