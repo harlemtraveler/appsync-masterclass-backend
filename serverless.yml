@@ -16,9 +16,9 @@ resources:
         Policies:
           PasswordPolicy:
             MinimumLength: 8
-            RequireLowerCase: false
+            RequireLowercase: false
             RequireNumbers: false
-            RequireUpperCase: false
+            RequireUppercase: false
             RequireSymbols: false
         UsernameAttributes:
           - email
