@@ -48,7 +48,7 @@ resources:
           - ALLOW_USER_SRP_AUTH # this is the default & recommended auth flow using the Secure Remote Password (SRP) protocol
           - ALLOW_USER_PASSWORD_AUTH
           - ALLOW_REFRESH_TOKEN_AUTH # required and con NOT be disabled
-        PreventUserExistenceErrors: ENABLE # so when someone tries to sign in through Cognito, but the user does not exist
+        PreventUserExistenceErrors: ENABLED # so when someone tries to sign in through Cognito, but the user does not exist
 
   Outputs:
     CognitoUserPoolId:
