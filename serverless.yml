@@ -42,7 +42,7 @@ resources:
     WebUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
-        UserPolId: !Ref CognitoUserPool
+        UserPoolId: !Ref CognitoUserPool
         ClientName: web
         ExplicitAuthFlows:
           - ALLOW_USER_SRP_AUTH # this is the default & recommended auth flow using the Secure Remote Password (SRP) protocol
