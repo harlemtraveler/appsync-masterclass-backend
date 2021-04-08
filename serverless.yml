@@ -20,6 +20,20 @@ custom:
 
 resources:
   Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST # this places the DDB instance onto a onDemand billing cycle
+        KeySchema:
+          - AttributeName: id # specifying the hash key
+            KeyType: HASH
+        AttributeDefinitions: # defining attributes by "name:dataType" pairs
+          - AttributeName: id
+            AttributeType: S
+        Tags: # adding tags is considered good practice
+          - Key: Environment # this env tag will be useful to differentiate between dev, test, prod, etc.
+            Value: ${self:} # this variable syntax refs an attribute [that can be] defined within serverless.yml
+
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
