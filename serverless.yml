@@ -28,6 +28,12 @@ custom:
   appSync:
     - ${file(serverless.appsync-api.yml)}
 
+functions:
+  confirmUserSignup:
+    handler: functions/confirm-user-signup.handler
+    environment:
+      USERS_TABLE: !Ref UsersTable # environment variable sued to reference the Users Table in DynamoDB
+
 resources:
   Resources:
     UsersTable:
