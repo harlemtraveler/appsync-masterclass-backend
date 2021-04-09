@@ -6,6 +6,7 @@ plugins:
 
 provider:
   name: aws
+  #stage: dev # default stage is "dev" if none specified.
   runtime: nodejs12.x
   region: us-east-1
 
@@ -15,6 +16,15 @@ provider:
 #    - package.json
 
 custom:
+  # Convention is to define a stage under the "custom" section, where a stage override is checked for.
+  #
+  #
+  # The following line of code states:
+  #   Step1 -> listen to the command line for any "stage overrides".
+  #   Step2 -> if no "stage overrides", then reference the "stage" property under the "provider" section above (*within this yml file).
+  #
+  # stage: ${listen-for-overrides, else-reference-stage-property-under-the-provider-section}
+  stage: ${opt:stage, self:provider.stage}
   appSync:
     - ${file(serverless.appsync-api.yml)}
 
@@ -32,7 +42,9 @@ resources:
             AttributeType: S
         Tags: # adding tags is considered good practice
           - Key: Environment # this env tag will be useful to differentiate between dev, test, prod, etc.
-            Value: ${self:} # this variable syntax refs an attribute [that can be] defined within serverless.yml
+            Value: ${self:custom.stage} # this variable syntax references a property named "stage", which is defined under the "custom" section.
+          - Key: Name # we can use the "Name" tag for Cost Tracking within AWS billing.
+            Value: users-tag
 
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
