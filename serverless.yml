@@ -9,18 +9,9 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  # We need to enable http keep-alive whenever we're using the AWS SDK for NodeJS (which nodejs does NOT do by default).
-  #
   environment:
-    # as good habit, below we specify the STAGE by referencing the "stage" property within the "custom" section.
     STAGE: ${self:custom.stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1" # this tells the AWS SDK to keep http alive
-
-# NOTE:
-#  What's the difference between the environment variables declared in the "provider" section vs "function" section?
-#   - Any environment variables declared in the "provider" section will apply to all functions.
-#   - Environment variables declared within "functions" section will only apply to the individual function it's attached to.
-
 
 
 custom:
@@ -33,8 +24,6 @@ functions:
     handler: functions/confirm-user-signup.handler
     environment:
       USERS_TABLE: !Ref UsersTable
-    # the serverless-iam-roles-per-function plugin allows us to declare this "iamRoleStatements" block,
-    # ...which enables Roles for individual functions.
     iamRoleStatements: # TODO: config Cognito to call this function when a new user has registered.
       - Effect: Allow
         Action: dynamodb:PutItem # allows this Lambda function to PUT new items into a DynamoDB table.
