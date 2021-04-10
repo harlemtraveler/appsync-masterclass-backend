@@ -3,27 +3,27 @@ frameworkVersion: '2'
 
 plugins:
   - serverless-appsync-plugin
+  - serverless-iam-roles-per-function # this plugin enables IAM Roles for individual Lambda functions.
 
 provider:
   name: aws
-  #stage: dev # default stage is "dev" if none specified.
   runtime: nodejs12.x
   region: us-east-1
+  # We need to enable http keep-alive whenever we're using the AWS SDK for NodeJS (which nodejs does NOT do by default).
+  #
+  environment:
+    # as good habit, below we specify the STAGE by referencing the "stage" property within the "custom" section.
+    STAGE: ${self:custom.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1" # this tells the AWS SDK to keep http alive
 
-#package:
-#  exclude:
-#    - package-lock.json
-#    - package.json
+# NOTE:
+#  What's the difference between the environment variables declared in the "provider" section vs "function" section?
+#   - Any environment variables declared in the "provider" section will apply to all functions.
+#   - Environment variables declared within "functions" section will only apply to the individual function it's attached to.
+
+
 
 custom:
-  # Convention is to define a stage under the "custom" section, where a stage override is checked for.
-  #
-  #
-  # The following line of code states:
-  #   Step1 -> listen to the command line for any "stage overrides".
-  #   Step2 -> if no "stage overrides", then reference the "stage" property under the "provider" section above (*within this yml file).
-  #
-  # stage: ${listen-for-overrides, else-reference-stage-property-under-the-provider-section}
   stage: ${opt:stage, self:provider.stage}
   appSync:
     - ${file(serverless.appsync-api.yml)}
@@ -32,24 +32,30 @@ functions:
   confirmUserSignup:
     handler: functions/confirm-user-signup.handler
     environment:
-      USERS_TABLE: !Ref UsersTable # environment variable sued to reference the Users Table in DynamoDB
+      USERS_TABLE: !Ref UsersTable
+    # the serverless-iam-roles-per-function plugin allows us to declare this "iamRoleStatements" block,
+    # ...which enables Roles for individual functions.
+    iamRoleStatements: # TODO: config Cognito to call this function when a new user has registered.
+      - Effect: Allow
+        Action: dynamodb:PutItem # allows this Lambda function to PUT new items into a DynamoDB table.
+        Resource: !GetAtt UsersTable.Arn # !GetAtt is a shorthand reference for GetAttribute
 
 resources:
   Resources:
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        BillingMode: PAY_PER_REQUEST # this places the DDB instance onto a onDemand billing cycle
+        BillingMode: PAY_PER_REQUEST
         KeySchema:
-          - AttributeName: id # specifying the hash key
+          - AttributeName: id
             KeyType: HASH
-        AttributeDefinitions: # defining attributes by "name:dataType" pairs
+        AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
-        Tags: # adding tags is considered good practice
-          - Key: Environment # this env tag will be useful to differentiate between dev, test, prod, etc.
-            Value: ${self:custom.stage} # this variable syntax references a property named "stage", which is defined under the "custom" section.
-          - Key: Name # we can use the "Name" tag for Cost Tracking within AWS billing.
+        Tags:
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Name
             Value: users-tag
 
     CognitoUserPool:
@@ -77,10 +83,10 @@ resources:
         UserPoolId: !Ref CognitoUserPool
         ClientName: web
         ExplicitAuthFlows:
-          - ALLOW_USER_SRP_AUTH # this is the default & recommended auth flow using the Secure Remote Password (SRP) protocol
+          - ALLOW_USER_SRP_AUTH
           - ALLOW_USER_PASSWORD_AUTH
-          - ALLOW_REFRESH_TOKEN_AUTH # required and con NOT be disabled
-        PreventUserExistenceErrors: ENABLED # so when someone tries to sign in through Cognito, but the user does not exist
+          - ALLOW_REFRESH_TOKEN_AUTH
+        PreventUserExistenceErrors: ENABLED
 
   Outputs:
     CognitoUserPoolId:
