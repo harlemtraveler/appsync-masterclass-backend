@@ -20,6 +20,8 @@ custom:
     - ${file(serverless.appsync-api.yml)}
 
 functions:
+  # see line 71...
+  # we can't ref confirmUserSignup by name because it's local to the Serverless Framework, so its use is restricted.
   confirmUserSignup:
     handler: functions/confirm-user-signup.handler
     environment:
@@ -66,6 +68,24 @@ resources:
             Name: name
             Required: false
             Mutable: true
+        LambdaConfig:
+          # - Here we need to ref the Lambda ARN.
+          # - Unfortunately, we just can't simply reference the Lambda from the "functions" section above because the Lambda itself is
+          # ...automatically created when we deploy this Serverless app (i.e. Cognito can't ref a ARN that doesn't exist yet).
+          # - However, we CAN obtain the Logical-ID that the Serverless Framework will create for the Lambda's ARN
+          # ...by running "npm run sls -- package" in Terminal.
+          #   -- running this command will generate the cloudformation-template (*and artifact) without deploying anything.
+          PostConfirmation: !GetAtt ConfirmUserSignupLambdaFunction.Arn
+
+    # NOTE: This is a LambdaPermission object used to grant Cognito permissions to invoke our Lambda
+    UserPoolInvokeConfirmUserSignupLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:invokeFunction # this is the permission to invoke
+        FunctionName: !Ref ConfirmUserSignupLambdaFunction # this is the name od the function
+        Principal: cognito-idp.amazonaws.com
+        SourceArn: !GetAtt CognitoUserPool.Arn # the ARN of the CognitoUserPool
+
     WebUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
