@@ -1,5 +1,5 @@
-// const DynamoDB =
-
+const DynamoDB = require('aws-sdk/clients/dynamodb'); // NOTE: if entire sdk not necessary, just "require" specific mods
+const DocumentClient = new DynamoDB.DocumentClient(); // init a new Dynamodb instance
 const { USERS_TABLE } = process.env;
 
 module.exports.handler = async (event) => {
