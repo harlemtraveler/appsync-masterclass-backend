@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/harlemtraveler/appsync-masterclass-backend#readme",
   "devDependencies": {
+    "aws-sdk": "^2.888.0",
     "serverless": "^2.4.0"
   },
   "dependencies": {
