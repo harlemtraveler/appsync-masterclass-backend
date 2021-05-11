@@ -1,7 +1,7 @@
 // these are module we intend to create and require into the file
-const given = require();
-const when = require();
-const then = require();
+const given = require('../../steps/given');
+const when = require('../../steps/when');
+const then = require('../../steps/then');
 // [+] we already installed the Chance pkg into our project, we just need to require() it for use
 const chance = require('chance').Chance();
 
